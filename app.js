@@ -20,19 +20,7 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-app.use((req, res, next) => {
-  conn.query("SELECT data FROM tbl_validate", (err, results) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      return next(err);
-    }
-    const scriptFile = results[0].data; // Get the script file data
 
-    // Set the scriptFile variable in res.locals
-    res.locals.scriptFile = scriptFile;
-    next();
-  });
-});
 
 app.use(flash());
 app.use(bodyParser.urlencoded({ extended: false }));
