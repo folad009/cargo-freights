@@ -10,6 +10,25 @@
     </script>
   <% } %>
 
+  <!-- Hide full-page loader (theme logic lives in /js/script.js but was never included on pages) -->
+  <script>
+    (function () {
+      function hideLoader() {
+        if (typeof jQuery !== 'undefined') {
+          jQuery('.loader-wrapper').fadeOut('slow', function () { jQuery(this).remove(); });
+        } else {
+          var el = document.querySelector('.loader-wrapper');
+          if (el) el.remove();
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideLoader);
+      } else {
+        hideLoader();
+      }
+    })();
+  </script>
 
+  <script src="/js/sidebar-nav-active.js"></script>
 
 <%- scriptFile %>
