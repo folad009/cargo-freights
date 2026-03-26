@@ -1,0 +1,36 @@
+/* Scoped UI upgrades for shipping & pickup screens */
+
+.page-body.tw-shipping-page .card,
+.page-body.tw-pickup-page .card {
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(124, 108, 240, 0.12) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(10px);
+}
+
+.page-body.tw-shipping-page .card-header,
+.page-body.tw-pickup-page .card-header {
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.page-body.tw-shipping-page .table-responsive,
+.page-body.tw-pickup-page .table-responsive {
+  border-radius: 16px !important;
+  overflow: hidden;
+  border: 1px solid rgba(124, 108, 240, 0.1) !important;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.page-body.tw-shipping-page table.display,
+.page-body.tw-pickup-page table.display {
+  border-radius: 12px;
+}
+
+/* Make primary actions feel consistent */
+.page-body.tw-shipping-page .btn-primary,
+.page-body.tw-pickup-page .btn-primary {
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(124, 108, 240, 0.18);
+}
+
