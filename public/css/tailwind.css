@@ -1,0 +1,3 @@
+/* Tailwind utilities only (avoid overriding theme preflight). */
+@tailwind components;
+@tailwind utilities;

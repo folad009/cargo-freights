@@ -10,7 +10,7 @@
   <meta name="author" content="">
   <link rel="icon" href="../../uploads/<%= data[0].site_logo %>" type="image/x-icon">
   <link rel="shortcut icon" href="../../uploads/<%= data[0].site_logo %>" type="image/x-icon">
-  <title>Sing Up</title>
+  <title>Oshus Freight Services - Customer Sign-up</title>
   <link rel="preconnect" href="https://fonts.googleapis.com/">
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
@@ -91,7 +91,7 @@
                       <label class="col-form-label pt-0">Phone No.</label>
                       <div class="row g-2">
                         <div class="col-4">
-                          <select class="js-example-basic-single" name="country_code" required>
+                          <select class="js-example-basic-single form-control" name="country_code" required>
                             <option value selected disabled>Country</option>
                             <% CountryCode.forEach((data, x) => { %>
                               <option value="<%= data %>"> <%= nameCode[x] %> <%= data %> </option>
@@ -118,7 +118,7 @@
                   <div class="row">
                     <div class="col-6">
                       <div class="col-form-label">Country</div>
-                      <select class="js-example-basic-single" name="country" id="singup_country" required>
+                      <select class="js-example-basic-single form-control" name="country" id="singup_country" required>
                         <option value selected disabled>Search Country</option>
                         <% countries.forEach((data)=> { %>
                           <option value="<%= data.id %>">
@@ -130,7 +130,7 @@
     
                     <div class="col-6">
                       <div class="col-form-label">Status</div>
-                      <select class="js-example-basic-single" name="state" id="singup_state" required>
+                      <select class="js-example-basic-single form-control" name="state" id="singup_state" required>
                         <option value selected disabled>Search State</option>
                         <!-- ajax -->
                       </select>
@@ -138,7 +138,7 @@
     
                     <div class="col-6">
                       <div class="col-form-label">City</div>
-                      <select class="js-example-basic-single" name="city" id="singup_city" required>
+                      <select class="js-example-basic-single form-control" name="city" id="singup_city" required>
                         <option value selected disabled>Search City</option>
                         <!-- ajax -->
                       </select>
