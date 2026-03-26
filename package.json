@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "nodemon",
+    "tailwind": "tailwindcss -i ./public/css/tailwind.css -o ./public/css/output.css --watch"
   },
   "author": "",
   "license": "ISC",
@@ -29,5 +30,10 @@
     "nodemon": "^2.0.21",
     "twilio": "^4.11.0",
     "vercel": "^50.34.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19"
   }
 }

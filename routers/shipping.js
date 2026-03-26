@@ -32,7 +32,10 @@ router.get("/create_shipment", auth, async(req, res) => {
         const lang_data = req.language_data
         const language_name = req.lang
         const accessdata = await access (req.user)
-        const notification_data = await mySqlQury(`SELECT * FROM tbl_notification WHERE received = '${role_data.id}' ORDER BY id DESC LIMIT 3`)
+        const notification_data = await mySqlQury(
+            `SELECT * FROM tbl_notification WHERE received = ? ORDER BY id DESC LIMIT 3`,
+            [role_data.id]
+        )
         const register_packages_notification = await mySqlQury(`SELECT * FROM tbl_register_packages`)
         const shipment_notification = await mySqlQury(`SELECT * FROM tbl_shipment`)
         const pickup_notification = await mySqlQury(`SELECT * FROM tbl_pickup`)
@@ -561,7 +564,10 @@ router.get("/list_of_shipment", auth, async(req, res) => {
         const lang_data = req.language_data
         const language_name = req.lang
         const accessdata = await access (req.user)
-        const notification_data = await mySqlQury(`SELECT * FROM tbl_notification WHERE received = '${role_data.id}' ORDER BY id DESC LIMIT 3`)
+        const notification_data = await mySqlQury(
+            `SELECT * FROM tbl_notification WHERE received = ? ORDER BY id DESC LIMIT 3`,
+            [role_data.id]
+        )
         const register_packages_notification = await mySqlQury(`SELECT * FROM tbl_register_packages`)
         const shipment_notification = await mySqlQury(`SELECT * FROM tbl_shipment`)
         const pickup_notification = await mySqlQury(`SELECT * FROM tbl_pickup`)
@@ -632,14 +638,28 @@ router.post("/assigndriver", auth, async(req, res) => {
         const role_data = req.user
         const accessdata = await access (req.user)
 
-        await mySqlQury(`UPDATE tbl_shipment SET assign_driver = '${req.body.assign_driver}' WHERE id = '${req.body.hidden_id}'`)
+        const { assign_driver, hidden_id } = req.body;
+
+        await mySqlQury(
+            `UPDATE tbl_shipment SET assign_driver = ? WHERE id = ?`,
+            [assign_driver, hidden_id]
+        )
 
         // ============== Notification ============= //
         
-        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = '${req.body.hidden_id}'`)
+        const shipment_data = await mySqlQury(
+            `SELECT * FROM tbl_shipment WHERE id = ?`,
+            [hidden_id]
+        )
 
-        const customer_data = await mySqlQury(`SELECT * FROM tbl_customers WHERE id = '${shipment_data[0].customer}'`)
-        const driver_data = await mySqlQury(`SELECT * FROM tbl_drivers WHERE id = '${req.body.assign_driver}'`)
+        const customer_data = await mySqlQury(
+            `SELECT * FROM tbl_customers WHERE id = ?`,
+            [shipment_data[0].customer]
+        )
+        const driver_data = await mySqlQury(
+            `SELECT * FROM tbl_drivers WHERE id = ?`,
+            [assign_driver]
+        )
 
         let date = new Date()
         let day = date.getDate()
@@ -728,7 +748,10 @@ router.get("/show_create_shipment/:id", auth, async(req, res) => {
         const lang_data = req.language_data
         const language_name = req.lang
         const accessdata = await access (req.user)
-        const notification_data = await mySqlQury(`SELECT * FROM tbl_notification WHERE received = '${role_data.id}' ORDER BY id DESC LIMIT 3`)
+        const notification_data = await mySqlQury(
+            `SELECT * FROM tbl_notification WHERE received = ? ORDER BY id DESC LIMIT 3`,
+            [role_data.id]
+        )
         const register_packages_notification = await mySqlQury(`SELECT * FROM tbl_register_packages`)
         const shipment_notification = await mySqlQury(`SELECT * FROM tbl_shipment`)
         const pickup_notification = await mySqlQury(`SELECT * FROM tbl_pickup`)
@@ -807,7 +830,10 @@ router.get("/edit_create_shipment/:id", auth, async(req, res) => {
         const lang_data = req.language_data
         const language_name = req.lang
         const accessdata = await access (req.user)
-        const notification_data = await mySqlQury(`SELECT * FROM tbl_notification WHERE received = '${role_data.id}' ORDER BY id DESC LIMIT 3`)
+        const notification_data = await mySqlQury(
+            `SELECT * FROM tbl_notification WHERE received = ? ORDER BY id DESC LIMIT 3`,
+            [role_data.id]
+        )
         const register_packages_notification = await mySqlQury(`SELECT * FROM tbl_register_packages`)
         const shipment_notification = await mySqlQury(`SELECT * FROM tbl_shipment`)
         const pickup_notification = await mySqlQury(`SELECT * FROM tbl_pickup`)
@@ -982,13 +1008,18 @@ router.get("/shipment_tracking/:id", auth, async(req, res) => {
         const lang_data = req.language_data
         const language_name = req.lang
         const accessdata = await access (req.user)
-        const notification_data = await mySqlQury(`SELECT * FROM tbl_notification WHERE received = '${role_data.id}' ORDER BY id DESC LIMIT 3`)
+        const notification_data = await mySqlQury(
+            `SELECT * FROM tbl_notification WHERE received = ? ORDER BY id DESC LIMIT 3`,
+            [role_data.id]
+        )
         const register_packages_notification = await mySqlQury(`SELECT * FROM tbl_register_packages`)
         const shipment_notification = await mySqlQury(`SELECT * FROM tbl_shipment`)
         const pickup_notification = await mySqlQury(`SELECT * FROM tbl_pickup`)
         const consolidated_notification = await mySqlQury(`SELECT * FROM tbl_consolidated`)
         
-        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = '${req.params.id}'`)
+        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = ?`, [
+            req.params.id,
+        ])
 
         const countries_data = await mySqlQury(`SELECT * FROM tbl_countries `)
         const office = await mySqlQury(`SELECT * FROM tbl_office_group`)
@@ -1013,7 +1044,10 @@ router.post("/shipment_tracking/:id", auth, async(req, res) => {
 
         const {location, address, office, delivery_status, message} = req.body
 
-        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = '${req.params.id}'`)
+        const shipment_data = await mySqlQury(
+            `SELECT * FROM tbl_shipment WHERE id = ?`,
+            [req.params.id]
+        )
 
         let adddate = new Date()
         let day = adddate.getDate()
@@ -1024,12 +1058,25 @@ router.post("/shipment_tracking/:id", auth, async(req, res) => {
         let today = new Date();
         let newtime = today.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 
-        let query = `INSERT INTO tbl_tracking_history (invoice, type, location, address, office, delivery_status, date, time, message) VALUE
-        ('${shipment_data[0].invoice}', 'shipment', '${location}', '${address}', '${office}', '${delivery_status}', '${fullDate}', '${newtime}', '${message}')`
-        await mySqlQury(query)
+        await mySqlQury(
+            `INSERT INTO tbl_tracking_history (invoice, type, location, address, office, delivery_status, date, time, message) VALUE
+            (?, 'shipment', ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                shipment_data[0].invoice,
+                location,
+                address,
+                office,
+                delivery_status,
+                fullDate,
+                newtime,
+                message,
+            ]
+        )
 
-        let edit_shipment = `UPDATE tbl_shipment SET delivery_status = '${delivery_status}' WHERE id = '${req.params.id}'`
-        await mySqlQury(edit_shipment)
+        await mySqlQury(
+            `UPDATE tbl_shipment SET delivery_status = ? WHERE id = ?`,
+            [delivery_status, req.params.id]
+        )
 
         // =========== email ========== //
 
@@ -1149,13 +1196,18 @@ router.get("/deliver_shipment/:id", auth, async(req, res) => {
         const lang_data = req.language_data
         const language_name = req.lang
         const accessdata = await access (req.user)
-        const notification_data = await mySqlQury(`SELECT * FROM tbl_notification WHERE received = '${role_data.id}' ORDER BY id DESC LIMIT 3`)
+        const notification_data = await mySqlQury(
+            `SELECT * FROM tbl_notification WHERE received = ? ORDER BY id DESC LIMIT 3`,
+            [role_data.id]
+        )
         const register_packages_notification = await mySqlQury(`SELECT * FROM tbl_register_packages`)
         const shipment_notification = await mySqlQury(`SELECT * FROM tbl_shipment`)
         const pickup_notification = await mySqlQury(`SELECT * FROM tbl_pickup`)
         const consolidated_notification = await mySqlQury(`SELECT * FROM tbl_consolidated`)
 
-        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = '${req.params.id}'`)
+        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = ?`, [
+            req.params.id,
+        ])
         const drivers_list = await mySqlQury(`SELECT * FROM tbl_drivers WHERE active = 1`)
 
         
@@ -1177,7 +1229,10 @@ router.post("/deliver_shipment/:id", auth, upload.single('image'), async(req, re
 
         const {assign_driver, person_receives, hidden_image} = req.body
 
-        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = '${req.params.id}'`)
+        const shipment_data = await mySqlQury(
+            `SELECT * FROM tbl_shipment WHERE id = ?`,
+            [req.params.id]
+        )
 
         let adddate = new Date()
         let day = adddate.getDate()
@@ -1190,9 +1245,18 @@ router.post("/deliver_shipment/:id", auth, upload.single('image'), async(req, re
 
         if (hidden_image == 0) {
             
-            let query = `INSERT INTO tbl_tracking_history (invoice, type, date, time, assign_driver, person_receives, delivery_status) VALUE 
-            ('${shipment_data[0].invoice}', 'shipment', '${fullDate}', '${newtime}', '${assign_driver}', '${person_receives}', '6')`
-            await mySqlQury(query)
+            await mySqlQury(
+                `INSERT INTO tbl_tracking_history (invoice, type, date, time, assign_driver, person_receives, delivery_status) VALUE
+                (?, 'shipment', ?, ?, ?, ?, ?)`,
+                [
+                    shipment_data[0].invoice,
+                    fullDate,
+                    newtime,
+                    assign_driver,
+                    person_receives,
+                    '6',
+                ]
+            )
         } else {
             let image = req.file.filename
 
@@ -1201,13 +1265,25 @@ router.post("/deliver_shipment/:id", auth, upload.single('image'), async(req, re
                 return res.redirect("back")
             }
 
-            let query = `INSERT INTO tbl_tracking_history (invoice, type, date, time, assign_driver, person_receives, image, delivery_status) VALUE 
-            ('${shipment_data[0].invoice}', 'shipment', '${fullDate}', '${newtime}', '${assign_driver}', '${person_receives}', '${image}', '6')`
-            await mySqlQury(query)
+            await mySqlQury(
+                `INSERT INTO tbl_tracking_history (invoice, type, date, time, assign_driver, person_receives, image, delivery_status) VALUE
+                (?, 'shipment', ?, ?, ?, ?, ?, ?)`,
+                [
+                    shipment_data[0].invoice,
+                    fullDate,
+                    newtime,
+                    assign_driver,
+                    person_receives,
+                    image,
+                    '6',
+                ]
+            )
         }
 
-        let edit_shipment = `UPDATE tbl_shipment SET delivery_status = '6' WHERE id = '${req.params.id}'`
-        await mySqlQury(edit_shipment)
+        await mySqlQury(
+            `UPDATE tbl_shipment SET delivery_status = ? WHERE id = ?`,
+            ['6', req.params.id]
+        )
 
 
         // =========== email ========== //
@@ -1321,8 +1397,10 @@ router.post("/deliver_shipment/:id", auth, upload.single('image'), async(req, re
 
 router.get("/override_shipment/:id", auth, async(req, res) => {
     try {
-        let query = `UPDATE tbl_shipment SET delivery_status = '2' WHERE id = '${req.params.id}'`
-        await mySqlQury(query)
+        await mySqlQury(
+            `UPDATE tbl_shipment SET delivery_status = ? WHERE id = ?`,
+            ['2', req.params.id]
+        )
 
         req.flash('success', `Cancelled successfully`)
         res.redirect("/shipping/list_of_shipment")
@@ -1348,18 +1426,23 @@ router.post("/payment/:id", auth, async(req, res) => {
         let year = date.getFullYear()
         let fullDate = `${year}-${month}-${day}`
 
-        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = '${req.params.id}'`)
+        const shipment_data = await mySqlQury(`SELECT * FROM tbl_shipment WHERE id = ?`, [
+            req.params.id,
+        ])
         console.log(shipment_data);
 
-        let query = `INSERT INTO tbl_payment (store_id, date, invoice, type, paid_amount) VALUE ('${shipment_data[0].customer}', '${fullDate}', '${shipment_data[0].invoice}',
-        'shipment', '${paid_amount}')`
-        await mySqlQury(query)
+        await mySqlQury(
+            `INSERT INTO tbl_payment (store_id, date, invoice, type, paid_amount) VALUES (?, ?, ?, 'shipment', ?)`,
+            [shipment_data[0].customer, fullDate, shipment_data[0].invoice, paid_amount]
+        )
 
         let due = parseFloat(shipment_data[0].due_amount) - parseFloat(paid_amount)
         let paid = parseFloat(shipment_data[0].paid_amount) + parseFloat(paid_amount)
         
-        let update_shipment_data = `UPDATE tbl_shipment SET paid_amount = '${paid}', due_amount = '${due}' WHERE id = '${req.params.id}'`
-        await mySqlQury(update_shipment_data)
+        await mySqlQury(
+            `UPDATE tbl_shipment SET paid_amount = ?, due_amount = ? WHERE id = ?`,
+            [paid, due, req.params.id]
+        )
 
 
         // ============== Notification ============= //

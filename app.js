@@ -1,24 +1,30 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const https = require("https")
-const bodyParser = require('body-parser');
 const path = require("path");
-const ejs = require('ejs');
-const {conn} = require('./middleware/db');
+const cookieParser = require("cookie-parser");
+const flash = require("./middleware/flash");
+const session = require("express-session");
+
 const port = process.env.PORT || 8000;
-const cookieParser = require('cookie-parser')
-const flash = require('./middleware/flash');
-const session = require('express-session');
+const isProd = process.env.NODE_ENV === "production";
+const sessionSecret =
+  process.env.SESSION_SECRET || process.env.TOKEN_KEY || "dev-only-change-me";
 
-
-app.set('trust proxy', 1);
-app.use(session({
-    secret: 'this is my secretkey',
+app.set("trust proxy", 1);
+app.use(
+  session({
+    secret: sessionSecret,
     resave: false,
-    cookie:{secure: true,maxAge: 1000 * 60 },
-    saveUninitialized: true,
-}));
+    saveUninitialized: false,
+    cookie: {
+      secure: isProd && process.env.SESSION_COOKIE_SECURE !== "false",
+      httpOnly: true,
+      maxAge: Number(process.env.SESSION_MAX_AGE_MS) || 1000 * 60 * 60 * 24,
+      sameSite: "lax",
+    },
+  }),
+);
 
 app.use((req, res, next) => {
   // Validation bypass: set empty to skip Envato purchase code redirect
@@ -27,8 +33,7 @@ app.use((req, res, next) => {
 });
 
 app.use(flash());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -58,7 +63,16 @@ app.use("/consolidated", require("./routers/consolidated"));
 app.use("/transactions", require("./routers/transactions"));
 app.use("/report", require("./routers/report"));
 
+app.use((req, res) => {
+  res.status(404).send("Not found");
+});
+
+app.use((err, req, res, _next) => {
+  console.error(err);
+  if (res.headersSent) return;
+  res.status(500).send("Something went wrong");
+});
 
 app.listen(port, () => {
-    console.log(`server running on port ${port}`);
-})
+  console.log(`server running on port ${port}`);
+});

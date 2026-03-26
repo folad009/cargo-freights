@@ -1,60 +1,49 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const language = require("../public/language/languages.json");
 
+const LANG_MAP = {
+  en: () => language.en,
+  de: () => language.de,
+  es: () => language.es,
+  fr: () => language.fr,
+  pt: () => language.pt,
+  cn: () => language.cn,
+  ae: () => language.ae,
+  in: () => language.in,
+};
 
-const auth = async(req, res, next) => {
-    try{
-        const token = req.cookies.jwt
-        
-        if(!token){
-            req.flash("errors", "You Are Not Authorized, Please Login First ...")
-            return res.redirect("/")
-        }
+const auth = async (req, res, next) => {
+  try {
+    const token = req.cookies.jwt;
 
-        const decode = await jwt.verify(token, process.env.TOKEN_KEY)
-        req.user = decode
-
-        
-        const lang = req.cookies.lang
-
-        const decode_lang = await jwt.verify(lang, process.env.TOKEN)
-        req.lang = decode_lang
-        
-
-        if (decode_lang.lang == 'en') {
-            let data = language.en
-            req.language_data = data
-        } else if (decode_lang.lang == 'de') {
-            let data = language.de
-            req.language_data = data
-        } else if (decode_lang.lang == 'es') {
-            let data = language.es
-            req.language_data = data
-        } else if (decode_lang.lang == 'fr') {
-            let data = language.fr
-            req.language_data = data
-        } else if (decode_lang.lang == 'pt') {
-            let data = language.pt
-            req.language_data = data
-        } else if (decode_lang.lang == 'cn') {
-            let data = language.cn
-            req.language_data = data
-        } else if (decode_lang.lang == 'ae') {
-            let data = language.ae
-            req.language_data = data
-        } else if (decode_lang.lang == 'in') {
-            let data = language.in
-            req.language_data = data
-        }
-
-    
-        next();
-    }catch(error){
-        console.log(error);
-        req.flash("errors", "You Are Not Authorized, Please Login First ...")
-        return res.redirect("/")
+    if (!token) {
+      req.flash("errors", "You Are Not Authorized, Please Login First ...");
+      return res.redirect("/");
     }
-}
 
-module.exports = auth
+    const decode = await jwt.verify(token, process.env.TOKEN_KEY);
+    req.user = decode;
+
+    const lang = req.cookies.lang;
+    let decode_lang;
+
+    if (!lang) {
+      decode_lang = { lang: "en" };
+    } else {
+      decode_lang = await jwt.verify(lang, process.env.TOKEN);
+    }
+    req.lang = decode_lang;
+
+    const langKey = decode_lang.lang || "en";
+    const pickLang = LANG_MAP[langKey] || LANG_MAP.en;
+    req.language_data = pickLang();
+
+    next();
+  } catch (error) {
+    console.error(error);
+    req.flash("errors", "You Are Not Authorized, Please Login First ...");
+    return res.redirect("/");
+  }
+};
+
+module.exports = auth;

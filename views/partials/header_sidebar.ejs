@@ -89,12 +89,12 @@
             </ul>
           </li>
 
-          <li class="maximize"><a href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
+          <li class="maximize"><a href="#!" onclick="javascript:toggleFullScreen()"><i class="fa fa-window-maximize" data-feather="maximize-2"></i></a></li>
 
-          <li class="language-nav">
+          <li class="language-nav bg-black">
             <div class="translate_wrapper">
               <div class="current_lang">
-                <div class="lang"><i data-feather="globe"></i></div>
+                <div class="lang"><i class="fa fa-globe" data-feather="globe"></i></div>
               </div>
               <div class="more_lang">
                 <div class="lang" id="en" data-value="en"><i class="flag-icon flag-icon-us"></i><span class="lang-txt">English<span> (US)</span></span></div>
@@ -110,7 +110,7 @@
           </li>
           <input type="hidden" id="hidden_lang" value="<%= language_name.lang %>">
           <li class="profile-nav onhover-dropdown">
-            <div class="account-user"><i data-feather="user"></i></div>
+            <div class="account-user"><i class="fa fa-user" data-feather="user"></i></div>
             <ul class="profile-dropdown onhover-show-div">
               <li><a href="/index/profile"><i data-feather="user"></i><span><%= lang_data.Profile %></span></a></li>
               <li><a href="/logout"><i data-feather="log-in"> </i><span><%= lang_data.Log_Out %></span></a></li>
@@ -128,8 +128,8 @@
       <div>
         <div class="logo-wrapper p-1 px-4">
           <a href="/index">
-            <img class="img-fluid for-light img-50" src="../../uploads/<%= accessdata.data.site_logo %>" alt=""> 
-             <span class="f-18 f-w-700 text-white"><%= accessdata.data.site_title %></span>
+            <img class="img-fluid for-light img-50" src="../../uploads/<%= accessdata.data.site_logo %>" alt=""/> 
+             <span class="f-12 f-w-700 text-white"><%= accessdata.data.site_title %></span>
           </a>
           <div class="back-btn"><i data-feather="grid"></i></div>
           <div class="toggle-sidebar icon-box-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
@@ -140,10 +140,6 @@
           <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
           <div id="sidebar-menu">
             <ul class="sidebar-links" id="simple-bar">
-
-              <li class="back-btn">
-                <div class="mobile-back text-end"><span><%= lang_data.Back %></span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
-              </li>
 
               <li class="menu-box"> 
                 <ul>
