@@ -25,13 +25,22 @@ const buildDbConfig = () => {
       const sslEnabled =
         asBool(process.env.DB_SSL, parsed.searchParams.get("ssl") === "true") ||
         /\.rlwy\.net$/i.test(parsed.hostname);
+      const host = parsed.hostname;
+      const port = Number(parsed.port) || 3306;
+      const database = decodeURIComponent(parsed.pathname.replace(/^\//, ""));
+
+      if (process.env.NODE_ENV === "production") {
+        console.info(
+          `[db] production target ${host}:${port}/${database} (source: URL env, ssl=${sslEnabled ? "on" : "off"})`,
+        );
+      }
 
       return {
-        host: parsed.hostname,
+        host,
         user: decodeURIComponent(parsed.username || ""),
         password: decodeURIComponent(parsed.password || ""),
-        database: decodeURIComponent(parsed.pathname.replace(/^\//, "")),
-        port: Number(parsed.port) || 3306,
+        database,
+        port,
         connectionLimit,
         waitForConnections: true,
         ...(sslEnabled ? { ssl: { rejectUnauthorized: false } } : {}),
@@ -41,19 +50,38 @@ const buildDbConfig = () => {
     }
   }
 
-  const host = process.env.DB_HOST || process.env.MYSQLHOST || "localhost";
-  const sslEnabled = asBool(process.env.DB_SSL, /\.rlwy\.net$/i.test(host));
+  const isProd = process.env.NODE_ENV === "production";
+  const host = process.env.DB_HOST || process.env.MYSQLHOST || "";
+  const user = process.env.DB_USER || process.env.MYSQLUSER || "";
+  const password =
+    process.env.DB_PASSWORD ??
+    process.env.MYSQLPASSWORD ??
+    "";
+  const database =
+    process.env.DB_NAME || process.env.MYSQLDATABASE || "";
+  const port = Number(process.env.DB_PORT || process.env.MYSQLPORT) || 3306;
+
+  if (isProd && !host) {
+    throw new Error(
+      "Missing DB config in production. Set MYSQL_URL (recommended) or DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME in Vercel environment variables.",
+    );
+  }
+
+  const normalizedHost = host || "localhost";
+  const sslEnabled = asBool(process.env.DB_SSL, /\.rlwy\.net$/i.test(normalizedHost));
+
+  if (isProd) {
+    console.info(
+      `[db] production target ${normalizedHost}:${port}/${database || "railway"} (source: DB_* env, ssl=${sslEnabled ? "on" : "off"})`,
+    );
+  }
 
   return {
-    host,
-    user: process.env.DB_USER || process.env.MYSQLUSER || "root",
-    password:
-      process.env.DB_PASSWORD ??
-      process.env.MYSQLPASSWORD ??
-      "",
-    database:
-      process.env.DB_NAME || process.env.MYSQLDATABASE || "railway",
-    port: Number(process.env.DB_PORT || process.env.MYSQLPORT) || 3306,
+    host: normalizedHost,
+    user: user || "root",
+    password,
+    database: database || "railway",
+    port,
     connectionLimit,
     waitForConnections: true,
     ...(sslEnabled ? { ssl: { rejectUnauthorized: false } } : {}),
