@@ -34,3 +34,41 @@
   box-shadow: 0 8px 20px rgba(124, 108, 240, 0.18);
 }
 
+/* Global logo sizing safeguards for large source images */
+.app-auth-logo {
+  max-width: 20% !important;
+  width: auto !important;
+  max-height: 82px !important;
+  object-fit: contain;
+}
+
+.app-header-logo {
+  width: 150px !important;
+  max-height: 52px !important;
+  object-fit: contain;
+}
+
+.app-sidebar-logo {
+  width: 56px !important;
+  max-height: 56px !important;
+  object-fit: contain;
+}
+
+.app-tracking-logo {
+  width: min(210px, 60vw);
+  max-height: 78px;
+  object-fit: contain;
+}
+
+.app-print-logo {
+  width: 120px;
+  max-height: 48px;
+  object-fit: contain;
+}
+
+.app-settings-logo {
+  width: 96px !important;
+  height: 96px !important;
+  object-fit: contain;
+}
+
